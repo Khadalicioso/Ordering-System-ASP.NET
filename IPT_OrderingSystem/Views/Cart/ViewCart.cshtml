@@ -1,0 +1,110 @@
+﻿@model IPT_OrderingSystem.Models.Cart
+
+<style>
+    .checkout-button {
+        background-color: #4CAF50; 
+        color: white; 
+        width: 80px;
+        margin-left: 30px;
+        padding: 10px 20px; 
+        text-align: center; 
+        text-decoration: none; 
+        display: inline-block;
+        border-radius: 5px;
+        transition: background-color 0.3s; 
+    }
+
+    .checkout-button:hover {
+        background-color: #45a049; 
+    }
+
+    .remove-link,
+    .continue-shopping-link {
+        text-decoration: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        margin: 5px;
+        transition: background-color 0.3s, color 0.3s;
+        display: inline-block;
+    }
+
+    .remove-link {
+        background-color: #dc3545; 
+        color: white; 
+    }
+
+        .remove-link:hover {
+            color: black;
+            background-color: #c82333; 
+        }
+
+    .continue-shopping-link {
+        background-color: #007BFF; 
+        color: white; 
+    }
+
+        .continue-shopping-link:hover {
+            color: black;
+            background-color: #0056b3; 
+        }
+
+    .checkout-button {
+        background-color: #28a745; 
+        color: white; 
+    }
+
+        .checkout-button:hover {
+            color: black;
+            background-color: #218838; 
+        }
+
+</style>
+
+<center><h2 style="margin-top: 120px; margin-bottom: 20px;">Your Shopping Cart</h2></center>
+
+@if (Model.Items.Any())
+{
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Items)
+            {
+                        <tr>
+                            <td>@item.Product.Name</td>
+                            <td>
+                                <form asp-action="UpdateCart" method="post" style="display:inline;">
+                                    <input type="number" name="quantity" value="@item.Quantity" min="1" style="width: 60px;" />
+                                    <input type="hidden" name="productId" value="@item.Product.ProductId" />
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                </form>
+                            </td>
+                            <td>₱@((item.Product.Price * item.Quantity).ToString("N"))</td>
+                            <td>
+                        @Html.ActionLink("Remove", "RemoveFromCart", "Cart", new { productId = item.Product.ProductId }, new { @class = "action-link remove-link" })
+                            </td>
+                        </tr>
+            }
+                <tr>
+                    <td colspan="2">Total:</td>
+                    <td>₱@Model.Total.ToString("N")</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+}
+else
+{
+        <p>Your cart is empty.</p>
+}
+
+@Html.ActionLink("Continue Shopping", "Index", "Products", null, new { @class = "action-link continue-shopping-link" })
+
+
+@Html.ActionLink("Pay", "Payment", "Cart", null, new { @class = "action-link checkout-button" })

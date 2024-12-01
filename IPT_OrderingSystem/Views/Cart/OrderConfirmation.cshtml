@@ -1,0 +1,30 @@
+﻿@model IPT_OrderingSystem.Models.Order
+
+<h2>Order Confirmation</h2>
+
+<p>Thank you for your order! Your order ID is @Model.OrderId.</p>
+<p>Order Date: @Model.OrderDate.ToString("g")</p>
+<p>Total: @Model.Total.ToString("C")</p>
+
+<h3>Order Items:</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.OrderItems)
+        {
+            <tr>
+                <td>@item.Product.Name</td>
+                <td>@item.Quantity</td>
+                <td>@(item.Product.Price * item.Quantity).ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@Html.ActionLink("Continue Shopping", "Index", "Products")

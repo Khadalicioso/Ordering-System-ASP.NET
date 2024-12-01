@@ -1,0 +1,85 @@
+﻿@model IEnumerable<IPT_OrderingSystem.Models.Product>
+
+<style>
+    .action-link {
+        text-decoration: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .edit-link {
+        background-color: #007BFF;
+        color: white;
+    }
+
+        .edit-link:hover {
+            color: black;
+            background-color: #0056b3;
+        }
+
+    .delete-link {
+        background-color: #dc3545;
+        color: white;
+    }
+
+        .delete-link:hover {
+            color: black;
+            background-color: #c82333;
+        }
+
+    .add-to-cart-link {
+        background-color: #28a745;
+        color: white;
+    }
+
+        .add-to-cart-link:hover {
+            color: black;
+            background-color: #218838;
+        }
+
+    .table {
+        text-align: center;
+    }
+
+    .th, .td {
+        text-align: center;
+    }
+</style>
+
+<center>
+    <h2 style="margin-top: 150px; margin-bottom: 20px;">Product List</h2>
+
+    <p>
+        @Html.ActionLink("Create New Product", "Create", "Products", null, new { @class = "btn btn-primary" })
+    </p>
+</center>
+<br />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model)
+        {
+            <tr>
+                <td>@product.Name</td>
+                <td>@product.Description</td>
+                <td>₱@product.Price.ToString("N")</td>
+                <td>@product.Stock</td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", "Products", new { id = product.ProductId }, new { @class = "action-link edit-link" }) |
+                    @Html.ActionLink("Delete", "Delete", "Products", new { id = product.ProductId }, new { @class = "action-link delete-link" }) |
+                    @Html.ActionLink("Add to Cart", "AddToCart", "Cart", new { productId = product.ProductId, quantity = 1 }, new { @class = "action-link add-to-cart-link" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

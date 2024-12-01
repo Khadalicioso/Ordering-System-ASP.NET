@@ -1,0 +1,150 @@
+﻿@model IPT_OrderingSystem.Models.ReceiptViewModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .receipt {
+            max-width: 600px;
+            margin-top: 100px;
+            padding: 20px;
+            border: 1px solid #000;
+            font-family: Arial, sans-serif;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+            .header h1 {
+                margin: 0;
+            }
+
+            .header p {
+                margin: 0;
+                font-size: 14px;
+            }
+
+        .details {
+            margin-bottom: 20px;
+        }
+
+            .details p {
+                margin: 4px 0;
+            }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+            table th, table td {
+                border: 1px solid #000;
+                padding: 8px;
+                text-align: left;
+            }
+
+        .total {
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .print-button {
+            text-align: center;
+            margin: 40px;
+        }
+
+        .print-button button {
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                font-size: 16px;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+        }
+
+        .print-button button:hover {
+                background-color: #45a049;
+        }
+
+        .print-button button:focus {
+                outline: none;
+        }
+    </style>
+</head>
+<body>
+    <center>
+        <div class="receipt">
+            <div class="header" style="text-align: center;">
+                <h1>Pogi Ko Talaga Inc.</h1>
+                <p>00-0004 Tokyo-to Chiyoda-ku, Otemachi Japan</p>
+                <br />
+                <div style="display: flex; justify-content: space-between; margin: 20px 0;">
+                    <div style="text-align: left;">
+                        <p>Bill to:</p>
+                        <p>Mark Pogi</p>
+                        <p>102 Drive Anywhere</p>
+                        <p>New York City</p>
+                    </div>
+                    <br />
+                    <div style="text-align: left;">
+                        <p>Receipt #: @Model.OrderId</p>
+                        <p>Date: @Model.OrderDate.ToString("MMMM dd, yyyy")</p>
+                    </div>
+                </div>
+            </div><br />
+
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                <thead>
+                    <tr>
+                        <th style="border: 1px solid black; padding: 8px;">Qty</th>
+                        <th style="border: 1px solid black; padding: 8px;">Product Name</th>
+                        <th style="border: 1px solid black; padding: 8px;">Unit Price</th>
+                        <th style="border: 1px solid black; padding: 8px;">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ReceiptItems)
+                    {
+                        <tr>
+                            <td style="border: 1px solid black; padding: 8px;">@item.Quantity</td>
+                            <td style="border: 1px solid black; padding: 8px;">@item.ProductName</td>
+                            <td style="border: 1px solid black; padding: 8px;">₱@item.UnitPrice.ToString("N")</td>
+                            <td style="border: 1px solid black; padding: 8px;">₱@item.Amount.ToString("N")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div class="total" style="text-align: right; margin-top: 20px;">
+                <p>Total: ₱@Model.Total.ToString("N")</p>
+            </div>
+
+
+        </div>
+    </center>
+    <div class="print-button">
+        <button onclick="hideAndPrint();">Print Receipt</button>
+    </div>
+</body>
+</html>
+
+<script>
+    function hideAndPrint() {
+        document.querySelector('.print-button').style.display = 'none';
+
+        window.print();
+    }
+
+    window.onafterprint = function () {
+        document.querySelector('.print-button').style.display = 'block';
+    };
+</script>
