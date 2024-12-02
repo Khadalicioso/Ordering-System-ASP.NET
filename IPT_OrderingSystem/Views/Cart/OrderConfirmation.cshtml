@@ -1,30 +1,111 @@
-﻿@model IPT_OrderingSystem.Models.Order
+@model IPT_OrderingSystem.Models.Order
 
-<h2>Order Confirmation</h2>
+@{
+    ViewData["Title"] = "Order Confirmation";
+}
 
-<p>Thank you for your order! Your order ID is @Model.OrderId.</p>
-<p>Order Date: @Model.OrderDate.ToString("g")</p>
-<p>Total: @Model.Total.ToString("C")</p>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <div class="display-1 text-success mb-3">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+                        <h2 class="fw-bold">Thank You for Your Order!</h2>
+                        <p class="text-muted">Your order has been successfully placed.</p>
+                        <div class="alert alert-success d-inline-block">
+                            Order #@Model.OrderId
+                        </div>
+                    </div>
 
-<h3>Order Items:</h3>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Price</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.OrderItems)
-        {
-            <tr>
-                <td>@item.Product.Name</td>
-                <td>@item.Quantity</td>
-                <td>@(item.Product.Price * item.Quantity).ToString("C")</td>
-            </tr>
+                    <div class="card bg-light mb-4">
+                        <div class="card-body">
+                            <h5 class="fw-bold mb-3">Order Details</h5>
+                            <div class="table-responsive">
+                                <table class="table mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Product</th>
+                                            <th class="text-center">Quantity</th>
+                                            <th class="text-end">Price</th>
+                                            <th class="text-end">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.OrderItems)
+                                        {
+                                            <tr>
+                                                <td>@item.Product.Name</td>
+                                                <td class="text-center">@item.Quantity</td>
+                                                <td class="text-end">₱@item.Product.Price.ToString("N")</td>
+                                                <td class="text-end">₱@((item.Product.Price * item.Quantity).ToString("N"))</td>
+                                            </tr>
+                                        }
+                                        <tr class="table-light">
+                                            <td colspan="3" class="text-end fw-bold">Total Amount:</td>
+                                            <td class="text-end fw-bold">₱@Model.Total.ToString("N")</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="fw-bold mb-3">
+                                        <i class="bi bi-geo-alt me-2"></i>Delivery Address
+                                    </h6>
+                                    <p class="mb-0">John Doe</p>
+                                    <p class="mb-0">San Bartolome</p>
+                                    <p class="mb-0">Quezon City</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="fw-bold mb-3">
+                                        <i class="bi bi-info-circle me-2"></i>Order Information
+                                    </h6>
+                                    <p class="mb-1"><strong>Order Date:</strong> @Model.OrderDate.ToString("MMMM dd, yyyy")</p>
+                                    <p class="mb-1"><strong>Payment Method:</strong> Cash</p>
+                                    <p class="mb-0"><strong>Status:</strong> <span class="badge bg-success">Confirmed</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <a asp-controller="Products" asp-action="Index" class="btn btn-primary btn-lg px-5">
+                            <i class="bi bi-shop me-2"></i>Continue Shopping
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
         }
-    </tbody>
-</table>
-
-@Html.ActionLink("Continue Shopping", "Index", "Products")
+        .card {
+            border-radius: 15px;
+            border: none;
+        }
+        .table th {
+            font-weight: 600;
+        }
+        .badge {
+            padding: 0.5em 1em;
+        }
+    </style>
+}

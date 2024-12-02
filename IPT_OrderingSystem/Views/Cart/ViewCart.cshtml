@@ -1,110 +1,185 @@
-﻿@model IPT_OrderingSystem.Models.Cart
+@model IPT_OrderingSystem.Models.Cart
 
-<style>
-    .checkout-button {
-        background-color: #4CAF50; 
-        color: white; 
-        width: 80px;
-        margin-left: 30px;
-        padding: 10px 20px; 
-        text-align: center; 
-        text-decoration: none; 
-        display: inline-block;
-        border-radius: 5px;
-        transition: background-color 0.3s; 
-    }
-
-    .checkout-button:hover {
-        background-color: #45a049; 
-    }
-
-    .remove-link,
-    .continue-shopping-link {
-        text-decoration: none;
-        padding: 8px 12px;
-        border-radius: 4px;
-        margin: 5px;
-        transition: background-color 0.3s, color 0.3s;
-        display: inline-block;
-    }
-
-    .remove-link {
-        background-color: #dc3545; 
-        color: white; 
-    }
-
-        .remove-link:hover {
-            color: black;
-            background-color: #c82333; 
-        }
-
-    .continue-shopping-link {
-        background-color: #007BFF; 
-        color: white; 
-    }
-
-        .continue-shopping-link:hover {
-            color: black;
-            background-color: #0056b3; 
-        }
-
-    .checkout-button {
-        background-color: #28a745; 
-        color: white; 
-    }
-
-        .checkout-button:hover {
-            color: black;
-            background-color: #218838; 
-        }
-
-</style>
-
-<center><h2 style="margin-top: 120px; margin-bottom: 20px;">Your Shopping Cart</h2></center>
-
-@if (Model.Items.Any())
-{
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Product</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach (var item in Model.Items)
-            {
-                        <tr>
-                            <td>@item.Product.Name</td>
-                            <td>
-                                <form asp-action="UpdateCart" method="post" style="display:inline;">
-                                    <input type="number" name="quantity" value="@item.Quantity" min="1" style="width: 60px;" />
-                                    <input type="hidden" name="productId" value="@item.Product.ProductId" />
-                                    <button type="submit" class="btn btn-primary">Update</button>
-                                </form>
-                            </td>
-                            <td>₱@((item.Product.Price * item.Quantity).ToString("N"))</td>
-                            <td>
-                        @Html.ActionLink("Remove", "RemoveFromCart", "Cart", new { productId = item.Product.ProductId }, new { @class = "action-link remove-link" })
-                            </td>
-                        </tr>
-            }
-                <tr>
-                    <td colspan="2">Total:</td>
-                    <td>₱@Model.Total.ToString("N")</td>
-                    <td></td>
-                </tr>
-            </tbody>
-        </table>
-}
-else
-{
-        <p>Your cart is empty.</p>
+@{
+    ViewData["Title"] = "Shopping Cart";
+    decimal total = Model.Total;
 }
 
-@Html.ActionLink("Continue Shopping", "Index", "Products", null, new { @class = "action-link continue-shopping-link" })
+<div class="container py-5">
+    @Html.AntiForgeryToken()
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="fw-bold mb-0">Shopping Cart</h2>
+                        <span class="badge bg-primary rounded-pill">@Model.Items.Count items</span>
+                    </div>
 
+                    @if (!Model.Items.Any())
+                    {
+                        <div class="text-center py-5">
+                            <i class="bi bi-cart-x display-1 text-muted mb-4"></i>
+                            <h3 class="text-muted">Your cart is empty</h3>
+                            <p class="text-muted mb-4">Add some items to your cart and they will appear here</p>
+                            <a asp-controller="Products" asp-action="Index" class="btn btn-primary">
+                                <i class="bi bi-shop me-2"></i>Continue Shopping
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col">Product</th>
+                                        <th scope="col" class="text-center">Quantity</th>
+                                        <th scope="col" class="text-end">Price</th>
+                                        <th scope="col" class="text-end">Total</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Items)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="ms-0">
+                                                        <h6 class="fw-bold mb-0">@item.Product.Name</h6>
+                                                        <p class="text-muted mb-0">@item.Product.Description</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="d-flex justify-content-center align-items-center">
+                                                    <button onclick="updateQuantity(@item.Product.ProductId, -1)" class="btn btn-sm btn-outline-secondary" @(item.Quantity <= 1 ? "disabled" : "")>
+                                                        <i class="bi bi-dash"></i>
+                                                    </button>
+                                                    <span class="mx-3" id="quantity-@item.Product.ProductId">@item.Quantity</span>
+                                                    <button onclick="updateQuantity(@item.Product.ProductId, 1)" class="btn btn-sm btn-outline-secondary">
+                                                        <i class="bi bi-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td class="text-end" id="price-@item.Product.ProductId">₱@item.Product.Price.ToString("N")</td>
+                                            <td class="text-end" id="total-@item.Product.ProductId">₱@((item.Product.Price * item.Quantity).ToString("N"))</td>
+                                            <td class="text-end">
+                                                <a asp-action="RemoveFromCart" asp-route-id="@item.Product.ProductId" class="btn btn-sm btn-outline-danger">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr class="fw-bold">
+                                        <td colspan="3" class="text-end">Total:</td>
+                                        <td class="text-end" id="cart-total">₱@Model.Total.ToString("N")</td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
 
-@Html.ActionLink("Pay", "Payment", "Cart", null, new { @class = "action-link checkout-button" })
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-controller="Products" asp-action="Index" class="btn btn-outline-primary">
+                                <i class="bi bi-arrow-left me-2"></i>Continue Shopping
+                            </a>
+                            <a asp-action="Payment" class="btn btn-primary">
+                                Proceed to Payment<i class="bi bi-arrow-right ms-2"></i>
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+        .card {
+            border-radius: 15px;
+        }
+        .table > :not(:first-child) {
+            border-top: none;
+        }
+        .btn-outline-secondary:hover {
+            background-color: #f8f9fa;
+            color: #0d6efd;
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        function updateQuantity(productId, change) {
+            const action = change > 0 ? 'IncreaseQuantity' : 'DecreaseQuantity';
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+            
+            fetch(`/Cart/${action}/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token,
+                    'X-CSRF-TOKEN': token
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const quantityElement = document.getElementById(`quantity-${productId}`);
+                    const priceElement = document.getElementById(`price-${productId}`);
+                    const totalElement = document.getElementById(`total-${productId}`);
+                    const cartTotalElement = document.getElementById('cart-total');
+                    const decreaseBtn = document.querySelector(`button[onclick="updateQuantity(${productId}, -1)"]`);
+                    
+                    if (data.quantity === 0) {
+                        // Remove the entire row if quantity is 0
+                        const row = quantityElement.closest('tr');
+                        row.remove();
+                        
+                        // Update item count in badge
+                        const badge = document.querySelector('.badge');
+                        const currentCount = parseInt(badge.textContent);
+                        badge.textContent = `${currentCount - 1} items`;
+                        
+                        // If no items left, show empty cart message
+                        if (currentCount - 1 === 0) {
+                            location.reload();
+                        }
+                    } else {
+                        // Update quantity
+                        quantityElement.textContent = data.quantity;
+                        
+                        // Update item total
+                        const price = parseFloat(priceElement.textContent.replace('₱', '').replace(',', ''));
+                        totalElement.textContent = `₱${(price * data.quantity).toFixed(2)}`;
+                        
+                        // Enable/disable decrease button
+                        decreaseBtn.disabled = data.quantity <= 1;
+                    }
+                    
+                    // Update cart total
+                    cartTotalElement.textContent = `₱${data.total.toFixed(2)}`;
+                } else {
+                    console.error('Failed to update quantity');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+}

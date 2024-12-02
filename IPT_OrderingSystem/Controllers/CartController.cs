@@ -1,4 +1,4 @@
-﻿using IPT_OrderingSystem.Data;
+using IPT_OrderingSystem.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using IPT_OrderingSystem.Models;
@@ -51,21 +51,70 @@ namespace IPT_OrderingSystem.Controllers
             return RedirectToAction("ViewCart");
         }
 
-        public ActionResult RemoveFromCart(int productId)
-        {
-            var cart = GetCart();
-            cart.RemoveItem(productId);
-            SaveCart(cart);
-            return RedirectToAction("ViewCart");
-        }
-
-        public ActionResult ViewCart()
+        public IActionResult ViewCart()
         {
             var cart = GetCart();
             return View(cart);
         }
 
-        public ActionResult Payment()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult IncreaseQuantity(int id)
+        {
+            var cart = GetCart();
+            var cartItem = cart.Items.FirstOrDefault(i => i.Product.ProductId == id);
+            
+            if (cartItem != null)
+            {
+                cartItem.Quantity++;
+                SaveCart(cart);
+                return Json(new { success = true, quantity = cartItem.Quantity, total = cart.Total });
+            }
+
+            return Json(new { success = false });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DecreaseQuantity(int id)
+        {
+            var cart = GetCart();
+            var cartItem = cart.Items.FirstOrDefault(i => i.Product.ProductId == id);
+            
+            if (cartItem != null)
+            {
+                if (cartItem.Quantity > 1)
+                {
+                    cartItem.Quantity--;
+                    SaveCart(cart);
+                    return Json(new { success = true, quantity = cartItem.Quantity, total = cart.Total });
+                }
+                else
+                {
+                    cart.Items.Remove(cartItem);
+                    SaveCart(cart);
+                    return Json(new { success = true, quantity = 0, total = cart.Total });
+                }
+            }
+
+            return Json(new { success = false });
+        }
+
+        public IActionResult RemoveFromCart(int id)
+        {
+            var cart = GetCart();
+            var cartItem = cart.Items.FirstOrDefault(i => i.Product.ProductId == id);
+            
+            if (cartItem != null)
+            {
+                cart.Items.Remove(cartItem);
+                SaveCart(cart);
+            }
+
+            return RedirectToAction("ViewCart");
+        }
+
+        public IActionResult Payment()
         {
             var cart = GetCart();
 
@@ -97,7 +146,7 @@ namespace IPT_OrderingSystem.Controllers
             return View(receipt);
         }
 
-        public ActionResult UpdateCart(int productId, int quantity)
+        public IActionResult UpdateCart(int productId, int quantity)
         {
             var cart = GetCart();
             var product = db.Products.Find(productId);
@@ -117,8 +166,5 @@ namespace IPT_OrderingSystem.Controllers
 
             return RedirectToAction("ViewCart");
         }
-
-
-
     }
 }
