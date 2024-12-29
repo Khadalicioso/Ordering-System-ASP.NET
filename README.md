@@ -56,8 +56,8 @@
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/Khadalicioso/online-ordering-asp.git
-   cd online-ordering-asp
+   git clone https://github.com/Khadalicioso/online-ordering-system-aspdotnet.git
+   cd online-ordering-system-aspdotnet
    ```
 
 2. **Setup Database**
@@ -113,7 +113,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👨‍💻 Author
 
-- **Khadalicioso** - *Initial work and UI modernization*
+- **Miguel Enrique Dasalla** - *Initial work and UI modernization*
 
 ---
 
