@@ -1,4 +1,4 @@
-# 🛍️ Modern Online Ordering System
+# 🛍️ Online Ordering 
 
 > A sophisticated e-commerce solution built with ASP.NET Core MVC, featuring a modern UI and secure authentication.
 
@@ -56,8 +56,8 @@
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/Khadalicioso/online_ordering_system.git
-   cd online_ordering_system
+   git clone https://github.com/Khadalicioso/online-ordering-asp.git
+   cd online-ordering-asp
    ```
 
 2. **Setup Database**
@@ -118,7 +118,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 <p align="center">
-  Made with ❤️ by Khadalicioso
-  <br>
-  <a href="https://github.com/Khadalicioso">GitHub</a>
+  Made with ❤️ for Educational Purpose
 </p>
