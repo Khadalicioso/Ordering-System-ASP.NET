@@ -1,4 +1,4 @@
-# 🛍️ Online Ordering 
+# 🛍️ Online Ordering System
 
 > A sophisticated e-commerce solution built with ASP.NET Core MVC, featuring a modern UI and secure authentication.
 
