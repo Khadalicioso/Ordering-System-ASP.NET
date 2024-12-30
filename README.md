@@ -1,6 +1,6 @@
 # 🛍️ Online Ordering System
 
-> A sophisticated e-commerce solution built with ASP.NET Core MVC, featuring a modern UI and secure authentication.
+A sophisticated e-commerce solution built with ASP.NET Core MVC, featuring a modern UI and secure authentication.
 
 ![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-6.0-blue)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-5.0-purple)
@@ -52,29 +52,6 @@
 - Visual Studio 2022 or VS Code
 - Node.js (for frontend package management)
 
-## ⚡ Quick Start
-
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/Khadalicioso/online-ordering-system-aspdotnet.git
-   cd online-ordering-system-aspdotnet
-   ```
-
-2. **Setup Database**
-   ```bash
-   dotnet ef database update
-   ```
-
-3. **Run the Application**
-   ```bash
-   dotnet run
-   ```
-
-4. **Access the Application**
-   ```
-   https://localhost:5001
-   ```
-
 ## 🏗️ Project Structure
 
 ```
@@ -103,20 +80,6 @@ IPT_OrderingSystem/
 - 📱 Improved mobile responsiveness
 - 🎨 Added professional gradient themes
 
-## 🤝 Contributing
-
-We welcome contributions! Please feel free to submit a Pull Request.
-
 ## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 👨‍💻 Author
-
-- **Miguel Enrique Dasalla** - *Initial work and UI modernization*
-
----
-
-<p align="center">
-  Made with ❤️ for Educational Purpose
-</p>
